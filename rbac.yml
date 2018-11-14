@@ -1,0 +1,28 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: docker-cleanup
+rules:
+  - apiGroups: ["*"]
+    resources: ["replicasets", "jobs", "pods"]
+    verbs: ["get", "list", "delete", "update"]
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: docker-cleanup
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: docker-cleanup
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: docker-cleanup
+subjects:
+- kind: ServiceAccount
+  name: docker-cleanup
+  namespace: kube-system
